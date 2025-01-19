@@ -58,28 +58,79 @@
 //
 // fruits = ['banna', 'apple', 'orange', 'grapes']
 // console.log(randomSelectFromArray(fruits))
+const totalScores = { computerScore: 0, playerScore: 0 };
 
-function getComputerChoice () {
-    const rpsChoice = ['Rock', 'Paper', 'Scissors']
-    const randNumber = Math.floor(Math.random() * 3)
-    return rpsChoice[randNumber]
+function getComputerChoice() {
+    const rpsChoices = ['Rock', 'Paper', 'Scissors'];
+    const randomIndex = Math.floor(Math.random() * rpsChoices.length);
+    return rpsChoices[randomIndex];
 }
 
 function getResult(playerChoice, computerChoice) {
-
-    let  score;
+    let score;
 
     if (playerChoice === computerChoice) {
-        score = 0
-    } else if (playerChoice === 'Rock' && computerChoice === 'Scissors') {
-        score = 1
-    } else if (playerChoice === 'Paper' && computerChoice === 'Rock') {
-        score = 1
-    } else if (playerChoice === 'Scissors' && computerChoice === 'Paper') {
-        score = 1
+        score = 0; // Tie
+    } else if (
+        (playerChoice === 'Rock' && computerChoice === 'Scissors') ||
+        (playerChoice === 'Paper' && computerChoice === 'Rock') ||
+        (playerChoice === 'Scissors' && computerChoice === 'Paper')
+    ) {
+        score = 1; // Player wins
     } else {
-        score = -1
+        score = -1; // Player loses
     }
+
+    return score;
 }
 
+function showResult(score, playerChoice, computerChoice) {
+    const resultDiv = document.getElementById('result');
+    const handsDiv = document.getElementById('hands');
+    const playerScoreDiv = document.getElementById('player-score');
+
+    if (score === -1) {
+        resultDiv.innerText = "You Lose! 😢";
+    } else if (score === 0) {
+        resultDiv.innerText = "It's a Tie! 🤝";
+    } else {
+        resultDiv.innerText = "You Won! 🎉";
+    }
+
+    handsDiv.innerText = `👤 ${playerChoice} vs 🤖 ${computerChoice}`;
+    playerScoreDiv.innerText = `Player Score: ${totalScores['playerScore']}`;
+}
+
+function onClickRPS(playerChoice) {
+    const computerChoice = getComputerChoice();
+    const score = getResult(playerChoice, computerChoice);
+    totalScores['playerScore'] += score;
+
+    showResult(score, playerChoice, computerChoice);
+}
+
+function playGame() {
+    const rpsButtons = document.querySelectorAll('.rpsButton');
+
+    rpsButtons.forEach(button => {
+        button.onclick = () => onClickRPS(button.value);
+    });
+
+    const endGameButton = document.getElementById('endGameButton');
+    endGameButton.onclick = () => endGame();
+}
+
+function endGame() {
+    totalScores['playerScore'] = 0;
+    totalScores['playerScore'] = 0;
+    const resultDiv = document.getElementById('result');
+    const handsDiv = document.getElementById('hands');
+    const playerScoreDiv = document.getElementById('player-score');
+
+    resultDiv.innerText = '';
+    handsDiv.innerText = '';
+    playerScoreDiv.innerText = '';
+}
+
+playGame();
 
